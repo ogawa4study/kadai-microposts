@@ -5,12 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\User;
+use App\Micropost;
 
 class UsersController extends Controller
 {
     public function index()
     {
-        $users = User::orderBy('id', 'desc')->paiginate(10);
+        $users = User::orderBy('id', 'desc')->paginate(10);
         
         return view('users.index', [
             'users' => $users,
@@ -20,7 +21,7 @@ class UsersController extends Controller
     public function show($id)
     {
         $user = User::find($id);
-        $microposts = $user->microposts()->orderBy('created_at', 'desc')->paiginate(10);
+        $microposts = $user->microposts()->orderBy('created_at', 'desc')->paginate(10);
         
         $data = [
             'user' => $user,
@@ -29,22 +30,20 @@ class UsersController extends Controller
         
         $data += $this->counts($user);
         
-        return view('users.show', [
-            'user' => $user,
-        ]);
+        return view('users.show', $data);
     }
     
-    public function followings($is)
+    public function followings($id)
     {
         $user = User::find($id);
-        $followings = $user->followings()->paiginate(10);
+        $followings = $user->followings()->paginate(10);
         
         $data = [
             'user' => $user,
             'users' => $followings,
         ];
         
-        $data += $this->contents($user);
+        $data += $this->counts($user);
         
         return view('users.followings', $data);
     }
@@ -59,7 +58,7 @@ class UsersController extends Controller
             'users' => $followers,
         ];
         
-        $data += $this->contents($user);
+        $data += $this->counts($user);
         
         return view('users.followers', $data);
     }

@@ -23,7 +23,7 @@ Route::post('login', 'Auth\LoginController@login')->name('login.post');
 Route::get('logout', 'Auth\LoginController@logout')->name('logout.get');
 
 //ユーザ機能
-Route::group(['middleware' => ['auth']], function() {
+Route::group(['middleware' => 'auth'], function() {
     Route::resource('users', 'UsersController', ['only' => ['index', 'show']]);
     
     Route::group(['prefix' => 'users/{id}'], function () {
@@ -32,9 +32,9 @@ Route::group(['middleware' => ['auth']], function() {
        //アンフォローをHTTPで操作可能にする
        Route::delete('unfollow', 'UserFollowController@destroy')->name('user.unfollow');
        //フォローしている人の一覧を表示する
-       Route::get('followings', 'UserFollowController@followings')->name('users.followings');
+       Route::get('followings', 'UsersController@followings')->name('users.followings');
        //フォローされている人の一覧を表示する
-       Route::get('followers', 'UserFollowController@followers')->name('users.followers');
+       Route::get('followers', 'UsersController@followers')->name('users.followers');
         
     });
     
